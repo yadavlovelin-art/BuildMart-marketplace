@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: buildmart-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_SETUP_KEY
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+    healthCheckPath: /api/health
+    autoDeploy: true
