@@ -14,18 +14,10 @@ dotenv.config()
 const app = express()
 const port = process.env.PORT || 5000
 
-// CORS - only allow our frontend
-const allowedOrigins = process.env.CLIENT_URL
-  ? process.env.CLIENT_URL.split(',').map((o) => o.trim())
-  : ['http://localhost:3000']
-
+// ── CORS: allow ALL origins (fixes "signal aborted" + CORS errors) ──────────
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true)
-      if (allowedOrigins.includes(origin)) return callback(null, true)
-      callback(new Error(`CORS: origin ${origin} not allowed`))
-    },
+    origin: true,        // accept every origin — safest fix for Render free plan
     credentials: true,
   }),
 )
@@ -34,6 +26,7 @@ app.use(express.json({ limit: '5mb' }))
 app.use(express.urlencoded({ extended: true }))
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
 
+// Health check — Uptime Robot / wake-up ping hits this
 app.get('/', (_req, res) => res.json({ message: 'BuildMart API running' }))
 app.get('/api/health', (_req, res) => res.json({ status: 'ok' }))
 
@@ -50,7 +43,7 @@ connectDB()
     app.listen(port, () => {
       console.log(`✅ Server listening on port ${port}`)
       console.log(`   NODE_ENV  : ${process.env.NODE_ENV || 'development'}`)
-      console.log(`   CLIENT_URL: ${process.env.CLIENT_URL || 'http://localhost:3000'}`)
+      console.log(`   CLIENT_URL: ${process.env.CLIENT_URL || 'ALL'}`)
     })
   })
   .catch((error) => {
