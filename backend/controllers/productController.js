@@ -29,7 +29,7 @@ const sampleProducts = [
     unit: 'bag',
     location: 'Delhi, Gurgaon, Jhajjar',
     description: 'Premium OPC cement for RCC, columns, beams, slabs, and concrete work.',
-    image: 'https://media.istockphoto.com/id/1448349078/photo/cement-bags-o-sacks-isolated-on-white.jpg?s=612x612',
+    image: 'https://media.istockphoto.com/id/1448349078/photo/cement-bags-o-sacks-isolated-on-white.jpg?s=612x612&w=0&k=20&c=F5_VosP_qf9xYgyVth-Vs3OsSjaL0gZBMae39zZ3Zmg=',
   },
   {
     _id: 'jamuna-sand-grade-a',
@@ -59,7 +59,7 @@ const sampleProducts = [
     unit: 'cft',
     location: 'Jhajjar, Gurgaon, Delhi',
     description: 'Machine-crushed 20mm aggregate for RCC, road base, pathways, and drainage work.',
-    image: 'https://img.freepik.com/premium-photo/gravel-texture-background-small-stones-floor-wall-background_719231-739.jpg?w=360',
+    image: 'https://5.imimg.com/data5/SELLER/Default/2024/8/446630870/NS/HX/LR/21456557/dadri-rodi.jpeg',
   },
   {
     _id: 'stone-dust-fine',
@@ -69,7 +69,7 @@ const sampleProducts = [
     unit: 'cft',
     location: 'Delhi NCR, Haryana Region',
     description: 'Fine stone dust for levelling, paver bedding, filling, and finishing work.',
-    image: 'https://5.imimg.com/data5/OD/QJ/JJ/SELLER-88767611/sand-dust-500x500.jpg',
+    image: 'https://5.imimg.com/data5/JA/ID/BS/ANDROID-68229411/product-jpeg-500x500.jpg',
   },
 ]
 
