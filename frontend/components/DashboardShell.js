@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { api } from '../services/api'
 import { categories, trackingSteps } from '../services/sampleData'
-import { ArrowRight, ClipboardList, LayoutDashboard, LogOut, Mail, PackagePlus, PackageSearch, Save, Trash2, Truck } from 'lucide-react'
+import { ArrowRight, ClipboardList, LayoutDashboard, LogOut, Mail, PackagePlus, PackageSearch, Pencil, Save, Trash2, Truck, X } from 'lucide-react'
 
 const emptyProduct = {
   name: '',
@@ -34,6 +34,8 @@ export default function DashboardShell() {
   const [orderForm, setOrderForm] = useState(emptyOrder)
   const [activeTab, setActiveTab] = useState('overview')
   const [feedback, setFeedback] = useState('')
+  const [editingProduct, setEditingProduct] = useState(null)
+  const [editForm, setEditForm] = useState(emptyProduct)
 
   const token = auth?.token
 
@@ -86,12 +88,46 @@ export default function DashboardShell() {
   }
 
   async function handleDelete(id) {
+    if (!confirm('Kya aap ye product delete karna chahte hain?')) return
     try {
       await api.deleteProduct(id, token)
       setProducts((current) => current.filter((product) => product._id !== id))
+      setFeedback('Product delete ho gaya.')
     } catch (error) {
       setFeedback(error.message)
     }
+  }
+
+  function handleEditClick(product) {
+    setEditingProduct(product._id)
+    setEditForm({
+      name: product.name || '',
+      category: product.category || 'Red Bricks',
+      price: product.price || '',
+      unit: product.unit || 'piece',
+      location: product.location || '',
+      description: product.description || '',
+      image: product.image || '',
+    })
+  }
+
+  function handleEditCancel() {
+    setEditingProduct(null)
+    setEditForm(emptyProduct)
+  }
+
+  async function handleEditSave(id) {
+    setFeedback('')
+    try {
+      const updated = await api.updateProduct(id, { ...editForm, price: Number(editForm.price) }, token)
+      setProducts((current) => current.map((p) => (p._id === id ? updated : p)))
+    } catch {
+      setProducts((current) =>
+        current.map((p) => (p._id === id ? { ...p, ...editForm, price: Number(editForm.price) } : p)),
+      )
+    }
+    setEditingProduct(null)
+    setFeedback('Product update ho gaya! ✓')
   }
 
   async function handleCreateOrder(event) {
@@ -211,7 +247,7 @@ export default function DashboardShell() {
             <ProductForm form={productForm} setForm={setProductForm} onSubmit={handleAddProduct} />
           </section>
         )}
-        {activeTab === 'products' && <ProductTable products={products} onDelete={handleDelete} />}
+        {activeTab === 'products' && <ProductTable products={products} onDelete={handleDelete} onEdit={handleEditClick} editingProduct={editingProduct} editForm={editForm} setEditForm={setEditForm} onEditSave={handleEditSave} onEditCancel={handleEditCancel} />}
         {activeTab === 'inquiries' && <InquiryList inquiries={inquiries} onConvert={handleConvertInquiry} />}
         {activeTab === 'create-order' && (
           <section className="rounded-md bg-white p-6 shadow-card ring-1 ring-slate-200">
@@ -289,15 +325,52 @@ function Input({ label, value, onChange, type = 'text', required = true }) {
   )
 }
 
-function ProductTable({ products, onDelete }) {
+function ProductTable({ products, onDelete, onEdit, editingProduct, editForm, setEditForm, onEditSave, onEditCancel }) {
+  const updateEdit = (field, value) => setEditForm((current) => ({ ...current, [field]: value }))
   return (
     <section className="rounded-md bg-white p-6 shadow-card ring-1 ring-slate-200">
       <h2 className="text-2xl font-black">Products</h2>
       <div className="mt-6 overflow-x-auto">
         <table className="min-w-full text-left text-sm">
-          <thead><tr className="border-b text-slate-500"><th className="pb-3">Product</th><th className="pb-3">Category</th><th className="pb-3">Price</th><th className="pb-3">Delivery</th><th className="pb-3">Action</th></tr></thead>
-          <tbody>{products.map((product) => <tr key={product._id} className="border-b border-slate-100"><td className="py-4 font-bold">{product.name}</td><td>{product.category}</td><td>Rs. {product.price} / {product.unit}</td><td>{product.location}</td><td><button onClick={() => onDelete(product._id)} className="inline-flex items-center gap-2 rounded-md bg-red-50 px-3 py-2 font-bold text-red-600"><Trash2 size={14} /> Delete</button></td></tr>)}</tbody>
+          <thead><tr className="border-b text-slate-500"><th className="pb-3 pr-4">Product</th><th className="pb-3 pr-4">Category</th><th className="pb-3 pr-4">Price</th><th className="pb-3 pr-4">Delivery</th><th className="pb-3">Actions</th></tr></thead>
+          <tbody>
+            {products.map((product) =>
+              editingProduct === product._id ? (
+                <tr key={product._id} className="border-b border-slate-100 bg-amber-50">
+                  <td colSpan={5} className="py-4 pr-2">
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <div><p className="mb-1 text-xs font-bold text-slate-500">Product Name</p><input value={editForm.name} onChange={(e) => updateEdit('name', e.target.value)} className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-accent" /></div>
+                      <div><p className="mb-1 text-xs font-bold text-slate-500">Category</p><select value={editForm.category} onChange={(e) => updateEdit('category', e.target.value)} className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-accent">{categories.map((c) => <option key={c.name}>{c.name}</option>)}</select></div>
+                      <div><p className="mb-1 text-xs font-bold text-slate-500">Price</p><input type="number" value={editForm.price} onChange={(e) => updateEdit('price', e.target.value)} className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-accent" /></div>
+                      <div><p className="mb-1 text-xs font-bold text-slate-500">Unit</p><input value={editForm.unit} onChange={(e) => updateEdit('unit', e.target.value)} className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-accent" /></div>
+                      <div><p className="mb-1 text-xs font-bold text-slate-500">Delivery Area</p><input value={editForm.location} onChange={(e) => updateEdit('location', e.target.value)} className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-accent" /></div>
+                      <div><p className="mb-1 text-xs font-bold text-slate-500">Image URL</p><input value={editForm.image} onChange={(e) => updateEdit('image', e.target.value)} className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-accent" /></div>
+                      <div className="md:col-span-2"><p className="mb-1 text-xs font-bold text-slate-500">Description</p><textarea value={editForm.description} onChange={(e) => updateEdit('description', e.target.value)} rows={2} className="w-full rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-accent" /></div>
+                      <div className="flex gap-3 md:col-span-2">
+                        <button onClick={() => onEditSave(product._id)} className="inline-flex items-center gap-2 rounded-md bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-600"><Save size={14} /> Save Changes</button>
+                        <button onClick={onEditCancel} className="inline-flex items-center gap-2 rounded-md bg-slate-100 px-4 py-2 font-bold text-slate-600 hover:bg-slate-200"><X size={14} /> Cancel</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                <tr key={product._id} className="border-b border-slate-100">
+                  <td className="py-4 pr-4 font-bold">{product.name}</td>
+                  <td className="pr-4">{product.category}</td>
+                  <td className="pr-4">Rs. {product.price} / {product.unit}</td>
+                  <td className="pr-4">{product.location}</td>
+                  <td>
+                    <div className="flex gap-2">
+                      <button onClick={() => onEdit(product)} className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-3 py-2 font-bold text-blue-600 hover:bg-blue-100"><Pencil size={14} /> Edit</button>
+                      <button onClick={() => onDelete(product._id)} className="inline-flex items-center gap-1 rounded-md bg-red-50 px-3 py-2 font-bold text-red-600 hover:bg-red-100"><Trash2 size={14} /> Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
         </table>
+        {!products.length && <p className="mt-4 text-slate-500">Koi product nahi hai abhi.</p>}
       </div>
     </section>
   )

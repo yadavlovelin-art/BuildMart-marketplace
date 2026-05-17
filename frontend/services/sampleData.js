@@ -12,7 +12,7 @@ export const categories = [
   {
     name: 'Cement',
     description: 'Reliable cement supply for slabs, plastering, RCC, and bulk project procurement.',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUlZAIGQivUoyTMvsNhZ1du7SNnn02v8ghag8K4NV2wA&s.png',
+    image: 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=800&q=80',
   },
   {
     name: 'Jamuna Sand',
@@ -27,12 +27,12 @@ export const categories = [
   {
     name: 'Rodi',
     description: 'Crushed aggregate for RCC work, roads, base layers, and site development.',
-    image: 'https://img.freepik.com/premium-photo/gravel-texture-background-small-stones-floor-wall-background_719231-739.jpg?w=360',
+    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80',
   },
   {
     name: 'Dust',
     description: 'Stone dust for paver bedding, levelling, filling, and construction finishing.',
-    image: 'https://5.imimg.com/data5/OD/QJ/JJ/SELLER-88767611/sand-dust-500x500.jpg',
+    image: 'https://images.unsplash.com/photo-1615811361523-711ef6997d2f?w=800&q=80',
   },
 ]
 
@@ -65,10 +65,10 @@ export const products = [
     category: 'Cement',
     description:
       'Premium OPC cement for RCC, columns, beams, slabs, and infrastructure-grade concrete work with steady dispatch availability.',
-    image: 'https://ibb.co/Mrh1pGd.png',
+    image: 'https://images.unsplash.com/photo-1590856029826-c7a73142bbf1?w=800&q=80',
     price: 385,
     unit: 'bag',
-    location: 'Gurgaon, Delhi, Haryana Regionr',
+    location: 'Gurgaon, Delhi, Haryana Region',
   },
   {
     _id: 'jamuna-sand-grade-a',
@@ -98,10 +98,10 @@ export const products = [
     category: 'Rodi',
     description:
       'Machine-crushed 20mm aggregate for RCC, road base, pathways, and drainage work supplied in bulk loads.',
-    image: 'https://img.freepik.com/premium-photo/gravel-texture-background-small-stones-floor-wall-background_719231-739.jpg?w=360',
+    image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80',
     price: 72,
     unit: 'cft',
-    location: 'Gurgaon, Delhi, Haryana Regioni',
+    location: 'Gurgaon, Delhi, Haryana Region',
   },
   {
     _id: 'stone-dust-fine',
@@ -109,7 +109,7 @@ export const products = [
     category: 'Dust',
     description:
       'Fine graded stone dust for levelling, paver installation, filling, and finishing work across active construction sites.',
-    image: 'https://5.imimg.com/data5/OD/QJ/JJ/SELLER-88767611/sand-dust-500x500.jpg',
+    image: 'https://images.unsplash.com/photo-1615811361523-711ef6997d2f?w=800&q=80',
     price: 34,
     unit: 'cft',
     location: 'Gurgaon, Delhi, Haryana Region',
